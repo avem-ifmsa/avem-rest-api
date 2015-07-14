@@ -1,0 +1,55 @@
+{
+  "name": "avem-rest-api",
+  "version": "1.0.0",
+  "description": "The official AVEM REST API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "reset": "node ./bin/reset",
+    "start": "node ./bin/server",
+    "config": "node ./bin/config",
+    "init-db": "node ./bin/init-db"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alex94puchades/avem-rest-api.git"
+  },
+  "keywords": [
+    "uv",
+    "avem",
+    "medicine"
+  ],
+  "author": "Alejandro Caravaca Puchades <alex94puchades@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/alex94puchades/avem-rest-api/issues"
+  },
+  "dependencies": {
+    "uid2": "0.0.3",
+    "async": "~1.3.0",
+    "bunyan": "^1.4.0",
+    "scrypt": "~4.0.7",
+    "lodash": "^3.10.0",
+    "express": "~4.13.1",
+    "mongoose": "~4.0.7",
+    "auth-rbac": "~0.5.18",
+    "body-parser": "~1.13.2",
+    "compression": "~1.5.1",
+    "cors": "~2.7.1",
+    "jsonapify": "0.4.10",
+    "oauth2orize": "~1.0.1",
+    "passport": "~0.2.2",
+    "passport-http": "~0.2.2",
+    "passport-http-bearer": "~1.0.1",
+    "passport-oauth2-public-client": "~0.1.0",
+    "passport-oauth2-client-password": "~0.1.2",
+    "readline-sync": "~1.2.19",
+    "ask-sync": "~0.1.5"
+  },
+  "devDependencies": {
+    "chai": "~3.0.0",
+    "mocha": "~2.2.5",
+    "sinon": "~1.15.4",
+    "sinon-chai": "~2.8.0"
+  }
+}

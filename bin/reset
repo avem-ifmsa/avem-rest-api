@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var path = require('path');
+var ask = require('ask-sync');
+var mongoose = require('mongoose');
+
+try {
+	var rootDir = process.argv[2] || '.';
+	console.log('This script will remove your config files and erase the database');
+	console.log('Make sure you have a backup of everything, as this action cannot be undone');
+	var response = ask.string('Are you sure you want to continue?', { values: ['yes','no'] })();
+	if (response === 'yes') {
+		console.log();
+		resetDatabaseSchema(rootDir);
+		removeConfigSettings(rootDir);
+		console.log();
+		console.log('Done');
+	} else {
+		console.log('Nothing done');
+	}
+} catch (e) {
+	console.log('Fatal error: %s', e.message);
+}
+
+function databaseConnect(settings) {
+	return mongoose.createConnection(settings.mongo.url);
+}
+
+function resetDatabaseSchema(rootDir) {
+	var configFile = path.join(rootDir, 'config');
+	configFile = path.resolve(configFile);
+	var config = require(configFile);
+	console.log('Erasing the database');
+	var conn = databaseConnect(config.db);
+	conn.on('open', function() {
+		conn.db.dropDatabase();
+		conn.close();
+	});
+}
+
+function removeConfigSettings(rootDir) {
+	console.log('Removing config files');
+	var configFile = path.join(rootDir, 'config.js');
+	var backupFile = path.join(rootDir, 'config.js.old');
+	fs.unlinkSync(configFile);
+	if (fs.existsSync(backupFile))
+		fs.unlinkSync(backupFile);
+}
