@@ -1,6 +1,7 @@
 var async = require('async');
 var passport = require('passport');
 
+var AnonymousStrategy = require('passport-anonymous');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
 var PublicClientStrategy = require('passport-oauth2-public-client').Strategy;
@@ -10,6 +11,8 @@ var User = require('./models/user');
 var Client = require('./models/client');
 var Session = require('./models/session');
 var AccessToken = require('./models/accessToken');
+
+passport.use(new AnonymousStrategy);
 
 function authenticateClientWithSecret(clientId, clientSecret, done) {
 	Client.findById(clientId, function(err, client) {
