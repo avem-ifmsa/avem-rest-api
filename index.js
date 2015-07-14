@@ -1,4 +1,5 @@
 var config = require('./config');
+var passport = require('./passport');
 
 var mongoose = require('mongoose');
 mongoose.connect(config.db.mongo.url);
@@ -9,19 +10,17 @@ var app = express();
 app.set('json spaces', 2);
 
 var cors = require('cors');
-var auth = require('./auth');
 var logger = require('./logger');
+var passport = require('./passport');
 var jsonapify = require('jsonapify');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({
-	type: ['application/json', 'application/vnd.api+json'],
-}));
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(cors(config.cors));
-app.use(auth.initialize());
+app.use(passport.initialize());
 app.use(logger.logRequest());
 
 app.use('/users', require('./controllers/users'));

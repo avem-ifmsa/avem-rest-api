@@ -1,4 +1,3 @@
-var auth = require('../auth');
 var common = require('./common');
 var express = require('express');
 var logger = require('../logger');
@@ -43,8 +42,8 @@ var accessTokenResource = jsonapify.resource(AccessToken, {
 var router = express.Router();
 
 router.get('/',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('access-token:enum'),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('access-token:enum'),
 	jsonapify.enumerate(accessTokenResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -57,14 +56,14 @@ function ifNotTokenOwner(priv) {
 }
 
 router.get('/:value',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotTokenOwner('access-token:read')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotTokenOwner('access-token:read')),
 	jsonapify.read(accessTokenResource, { value: jsonapify.param('value') }),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:value',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotTokenOwner('access-token:remove')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotTokenOwner('access-token:remove')),
 	jsonapify.delete(accessTokenResource, { value: jsonapify.param('value') }),
 	logger.logErrors(), jsonapify.errorHandler());
 

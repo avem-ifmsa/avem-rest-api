@@ -1,4 +1,3 @@
-var auth = require('../auth');
 var async = require('async');
 var common = require('./common');
 var express = require('express');
@@ -31,8 +30,8 @@ var refreshTokenResource = jsonapify.resource(RefreshToken, {
 var router = express.Router();
 
 router.get('/',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('refresh-token:enum'),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('refresh-token:enum'),
 	jsonapify.enumerate(refreshTokenResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -60,14 +59,14 @@ function ifNotTokenOwner(priv) {
 }
 
 router.get('/:value',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotTokenOwner('refresh-token:read')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotTokenOwner('refresh-token:read')),
 	jsonapify.read(refreshTokenResource, { value: jsonapify.param('value') }),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:value',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotTokenOwner('refresh-token:remove')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotTokenOwner('refresh-token:remove')),
 	jsonapify.delete(refreshTokenResource, { value: jsonapify.param('value') }),
 	logger.logErrors(), jsonapify.errorHandler());
 

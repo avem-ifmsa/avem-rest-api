@@ -1,4 +1,4 @@
-var auth = require('../auth');
+var common = require('./common');
 var express = require('express');
 var logger = require('../logger');
 var jsonapify = require('jsonapify');
@@ -33,8 +33,8 @@ var sessionResource = jsonapify.resource(Session, {
 var router = express.Router();
 
 router.get('/',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('session:enum'),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('session:enum'),
 	jsonapify.enumerate(sessionResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -50,20 +50,20 @@ function ifNotSessionOwner(priv) {
 }
 
 router.get('/:id',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotSessionOwner('session:read')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotSessionOwner('session:read')),
 	jsonapify.read(sessionResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotSessionOwner('session:edit')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotSessionOwner('session:edit')),
 	jsonapify.update(sessionResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege(ifNotSessionOwner('session:remove')),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege(ifNotSessionOwner('session:remove')),
 	jsonapify.delete(sessionResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 

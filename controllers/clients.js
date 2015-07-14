@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var auth = require('../auth');
+var common = require('./common');
 var express = require('express');
 var logger = require('../logger');
 var jsonapify = require('jsonapify');
@@ -31,8 +31,8 @@ var clientResource = jsonapify.resource(Client, {
 var router = express.Router();
 
 router.get('/',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('client:enum'),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('client:enum'),
 	jsonapify.enumerate(clientResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -49,28 +49,28 @@ function clientTrustPrivilege(req, cb) {
 }
 
 router.post('/',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('client:add'),
-	auth.requirePrivilege(clientTrustPrivilege),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('client:add'),
+	common.requirePrivilege(clientTrustPrivilege),
 	jsonapify.create(clientResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('client:read'),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('client:read'),
 	jsonapify.read(clientResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('client:edit'),
-	auth.requirePrivilege(clientTrustPrivilege),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('client:edit'),
+	common.requirePrivilege(clientTrustPrivilege),
 	jsonapify.update(clientResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
-	auth.authenticateAccessToken(),
-	auth.requirePrivilege('client:remove'),
+	common.authenticateWithAccessToken(),
+	common.requirePrivilege('client:remove'),
 	jsonapify.delete(clientResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 

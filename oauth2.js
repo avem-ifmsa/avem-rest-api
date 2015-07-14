@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var async = require('async');
 var config = require('./config');
+var oauth2orize = require('oauth2orize');
 
 var User = require('./models/user');
 var Client = require('./models/client');
@@ -8,7 +9,6 @@ var Session = require('./models/session');
 var AccessToken = require('./models/accessToken');
 var RefreshToken = require('./models/refreshToken');
 
-var oauth2orize = require('oauth2orize');
 var server = oauth2orize();
 
 server.serializeClient(function(client, done) {
@@ -50,9 +50,9 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
 
 server.exchange(oauth2orize.exchange.refreshToken(function(client, token, done) {
 	RefreshToken.findOne({ value: token }, function(err, refreshToken) {
-		if (err || !refreshToken) return done(err, null);
+		if (err || !refreshToken) return done(err, false);
 		Session.findById(refreshToken.session, function(err, session) {
-			if (err || !session) return done(err, null);
+			if (err || !session) return done(err, false);
 			var newAccessToken = new AccessToken;
 			var newRefreshToken = new RefreshToken;
 			var tokenDuration = session.tokenDuration;
