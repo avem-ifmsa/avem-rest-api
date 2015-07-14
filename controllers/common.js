@@ -3,6 +3,9 @@ var auth = require('../authority');
 var jsonapify = require('jsonapify');
 var passport = require('../passport');
 
+var Session = require('../models/session');
+var AccessToken = require('../models/accessToken');
+
 function currentSession(req, cb) {
 	var token = extractAccessToken(req);
 	async.waterfall([
