@@ -33,7 +33,7 @@
     "compression": "~1.5.1",
     "cors": "~2.7.1",
     "express": "~4.13.1",
-    "jsonapify": "0.4.10",
+    "jsonapify": "0.4.11",
     "lodash": "^3.10.0",
     "mongoose": "~4.0.7",
     "oauth2orize": "~1.0.1",
