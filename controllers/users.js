@@ -32,13 +32,13 @@ var userResource = jsonapify.resource(User, {
 var router = express.Router();
 
 router.get('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('user:enum'),
 	jsonapify.enumerate(userResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.post('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('user:add'),
 	jsonapify.create(userResource),
 	logger.logErrors(), jsonapify.errorHandler());
@@ -70,19 +70,19 @@ function userEditPrivilege(req) {
 }
 
 router.get('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(userEditPrivilege),
 	jsonapify.read(userResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(userEditPrivilege),
 	jsonapify.update(userResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSelf('user:remove')),
 	jsonapify.delete(userResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());

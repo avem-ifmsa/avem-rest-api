@@ -31,7 +31,7 @@ var clientResource = jsonapify.resource(Client, {
 var router = express.Router();
 
 router.get('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:enum'),
 	jsonapify.enumerate(clientResource),
 	logger.logErrors(), jsonapify.errorHandler());
@@ -49,27 +49,27 @@ function clientTrustPrivilege(req, cb) {
 }
 
 router.post('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:add'),
 	common.requirePrivilege(clientTrustPrivilege),
 	jsonapify.create(clientResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:read'),
 	jsonapify.read(clientResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:edit'),
 	common.requirePrivilege(clientTrustPrivilege),
 	jsonapify.update(clientResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:remove'),
 	jsonapify.delete(clientResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());

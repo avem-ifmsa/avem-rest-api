@@ -33,7 +33,7 @@ var sessionResource = jsonapify.resource(Session, {
 var router = express.Router();
 
 router.get('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('session:enum'),
 	jsonapify.enumerate(sessionResource),
 	logger.logErrors(), jsonapify.errorHandler());
@@ -50,19 +50,19 @@ function ifNotSessionOwner(priv) {
 }
 
 router.get('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:read')),
 	jsonapify.read(sessionResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:edit')),
 	jsonapify.update(sessionResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:remove')),
 	jsonapify.delete(sessionResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());

@@ -30,7 +30,7 @@ var refreshTokenResource = jsonapify.resource(RefreshToken, {
 var router = express.Router();
 
 router.get('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('refresh-token:enum'),
 	jsonapify.enumerate(refreshTokenResource),
 	logger.logErrors(), jsonapify.errorHandler());
@@ -59,13 +59,13 @@ function ifNotTokenOwner(priv) {
 }
 
 router.get('/:value',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:read')),
 	jsonapify.read(refreshTokenResource, { value: jsonapify.param('value') }),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:value',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:remove')),
 	jsonapify.delete(refreshTokenResource, { value: jsonapify.param('value') }),
 	logger.logErrors(), jsonapify.errorHandler());

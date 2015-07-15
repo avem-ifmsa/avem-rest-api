@@ -6,6 +6,23 @@ var passport = require('../passport');
 var Session = require('../models/session');
 var AccessToken = require('../models/accessToken');
 
+function authenticate(methods) {
+	return [
+		passport.authenticate(methods, { session: false }),
+		auth.identify(),
+	];
+}
+
+function requirePrivilege(priv) {
+	return auth.requirePrivilege(priv, {
+		onAccessDenied: sendAccessDenied,
+	});
+	
+	function sendAccessDenied(req, res, next) {
+		next(new jsonapify.errors.HttpError(401));
+	}
+}
+
 function currentSession(req, cb) {
 	var token = extractAccessToken(req);
 	async.waterfall([
@@ -17,16 +34,6 @@ function currentSession(req, cb) {
 			Session.findById(accessToken.session, cb);
 		},
 	], cb);
-}
-
-function requirePrivilege(priv) {
-	return auth.requirePrivilege(priv, {
-		onAccessDenied: sendAccessDenied,
-	});
-	
-	function sendAccessDenied(req, res, next) {
-		next(new jsonapify.errors.HttpError(401));
-	}
 }
 
 function extractAccessToken(req) {
@@ -54,23 +61,7 @@ function extractAccessToken(req) {
 	}
 }
 
-function authenticatePublicClient() {
-	var methods = ['client-basic','client-password','client-public'];
-	return [
-		passport.authenticate(methods, { session: false }),
-		auth.identify(),
-	];
-}
-
-function authenticateWithAccessToken() {
-	return [
-		passport.authenticate('token-bearer', { session: false }),
-		auth.identify(),
-	];
-}
-
+exports.authenticate = authenticate;
 exports.currentSession = currentSession;
 exports.requirePrivilege = requirePrivilege;
 exports.extractAccessToken = extractAccessToken;
-exports.authenticatePublicClient = authenticatePublicClient;
-exports.authenticateWithAccessToken = authenticateWithAccessToken;

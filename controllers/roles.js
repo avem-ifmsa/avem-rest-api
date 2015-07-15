@@ -28,31 +28,31 @@ var roleResource = jsonapify.resource(Role, {
 var router = express.Router();
 
 router.get('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:enum'),
 	jsonapify.enumerate(roleResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.post('/',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:add'),
 	jsonapify.create(roleResource),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:read'),
 	jsonapify.read(roleResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:edit'),
 	jsonapify.update(roleResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
-	common.authenticateWithAccessToken(),
+	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:remove'),
 	jsonapify.update(roleResource, jsonapify.param('id')),
 	logger.logErrors(), jsonapify.errorHandler());
