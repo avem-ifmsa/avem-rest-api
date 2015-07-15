@@ -12,9 +12,9 @@ var refreshTokenSchema = new mongoose.Schema({
 		type: String,
 		index: true,
 		unique: true,
+		required: true,
 		default: randomToken,
 	},
-	
 	session: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'Session',

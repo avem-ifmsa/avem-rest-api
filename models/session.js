@@ -8,18 +8,15 @@ var sessionSchema = new mongoose.Schema({
 		ref: 'User',
 		required: true,
 	},
-	
 	ownerClient: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'Client',
 		required: true,
 	},
-	
 	tokenDuration: {
 		type: Number,
 		required: true,
 	},
-	
 	references: {
 		type: Number,
 		required: true,

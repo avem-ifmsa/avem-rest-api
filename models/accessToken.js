@@ -13,16 +13,15 @@ var accessTokenSchema = new mongoose.Schema({
 		type: String,
 		index: true,
 		unique: true,
+		required: true,
 		default: randomToken,
 	},
-	
 	session: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'Session',
 		index: true,
 		required: true,
 	},
-	
 	expirationDate: {
 		type: Date,
 		required: true,

@@ -7,9 +7,12 @@ var roleSchema = new mongoose.Schema({
 		unique: true,
 		required: true,
 	},
-	
-	description: { type: String },
-	privileges: [{ type: String }],
+	description: {
+		type: String,
+	},
+	privileges: [{
+		type: String,
+	}],
 });
 
 module.exports = mongoose.model('Role', roleSchema);

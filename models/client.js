@@ -14,17 +14,16 @@ var clientSchema = new mongoose.Schema({
 		unique: true,
 		required: true,
 	},
-	
 	secret: {
 		type: String,
+		required: true,
 		default: randomSecret,
 	},
-	
 	trusted: {
 		type: Boolean,
 		default: false,
+		required: true,
 	},
-	
 	redirectUri: {
 		type: String,
 	},
