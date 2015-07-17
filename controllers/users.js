@@ -46,7 +46,7 @@ router.post('/',
 function userIsSelf(req) {
 	var id = req.params.id;
 	var user = req.auth.user.info;
-	return user._id !== id ? priv : false;
+	return user._id === id;
 }
 
 function ifNotSelf(priv) {
