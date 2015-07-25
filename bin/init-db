@@ -2,6 +2,7 @@
 
 var ask = require('ask-sync');
 var async = require('async');
+var mongoose = require('mongoose');
 
 try {
 	var config = require('../config');
@@ -10,7 +11,6 @@ try {
 	process.exit();
 }
 
-var mongoose = require('mongoose');
 mongoose.connect(config.db.mongo.url);
 
 var User = require('../models/user');
@@ -127,7 +127,7 @@ function createAdminUser(role, done) {
 	user.email = data.email;
 	user.password = data.password;
 	user.save(function(err) {
-		if (err || !user) return done(err, false);
+		if (err) return done(err, false);
 		console.log('Created admin user:');
 		console.log('- User email: %s', user.email);
 		console.log('- User password: %s', data.password); 

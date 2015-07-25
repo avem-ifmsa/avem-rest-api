@@ -13,7 +13,6 @@ var userSchema = new mongoose.Schema({
 	},
 	passwordHash: {
 		type: Buffer,
-		required: true,
 	},
 	role: {
 		type: mongoose.Schema.ObjectId,
