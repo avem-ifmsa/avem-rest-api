@@ -1,11 +1,12 @@
 var cors = require('cors');
-var config = require('./config');
-var logger = require('./logger');
 var express = require('express');
 var mongoose = require('mongoose');
-var passport = require('./passport');
 var bodyParser = require('body-parser');
 var compression = require('compression');
+
+var config = require('./config');
+var logger = require('./logger');
+var passport = require('./passport');
 
 mongoose.connect(config.db.mongo.url);
 
@@ -20,9 +21,9 @@ app.use(passport.initialize());
 app.use(logger.logRequest());
 
 app.use('/', require('./controllers/index'));
+app.use('/oauth2', require('./controllers/oauth2'));
 app.use('/users', require('./controllers/users'));
 app.use('/roles', require('./controllers/roles'));
-app.use('/oauth2', require('./controllers/oauth2'));
 app.use('/clients', require('./controllers/clients'));
 app.use('/sessions', require('./controllers/sessions'));
 app.use('/access-tokens', require('./controllers/accessTokens'));

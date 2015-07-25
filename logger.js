@@ -1,4 +1,5 @@
 var bunyan = require('bunyan');
+
 var config = require('./config');
 
 var logger = bunyan({

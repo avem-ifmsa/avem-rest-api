@@ -1,6 +1,5 @@
 var async = require('async');
 var passport = require('passport');
-
 var AnonymousStrategy = require('passport-anonymous');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;

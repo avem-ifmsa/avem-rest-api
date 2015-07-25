@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var async = require('async');
-var config = require('./config');
 var oauth2orize = require('oauth2orize');
 
+var config = require('./config');
 var User = require('./models/user');
 var Client = require('./models/client');
 var Session = require('./models/session');
