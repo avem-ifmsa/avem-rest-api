@@ -1,27 +1,28 @@
 var async = require('async');
-var common = require('./common');
 var express = require('express');
-var logger = require('../logger');
 var jsonapify = require('jsonapify');
 
+var common = require('./common');
+var logger = require('../logger');
 var Role = require('../models/role');
-var clientResource = require('./clients').Resource;
-var roleResource = jsonapify.resource(Role, {
-	type: 'roles',
-	id: {
-		value: jsonapify.property('_id'),
+var clientResource = require('./clients').resource;
+
+var roleResource = new jsonapify.Resource(Role, {
+	'type': 'roles',
+	'id': {
+		value: new jsonapify.Property('_id'),
 		writable: false,
 	},
-	links: {
-		self: {
-			value: jsonapify.template('/roles/{_id}'),
+	'links': {
+		'self': {
+			value: new jsonapify.Template('/roles/${_id}'),
 			writable: false,
 		},
 	},
-	attributes: {
-		name: jsonapify.property('name'),
-		description: jsonapify.property('description'),
-		privileges: jsonapify.property('privileges'),
+	'attributes': {
+		'name': new jsonapify.Property('name'),
+		'description': new jsonapify.Property('description'),
+		'privileges': new jsonapify.Property('privileges'),
 	},
 });
 
@@ -42,20 +43,20 @@ router.post('/',
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:read'),
-	jsonapify.read(roleResource, jsonapify.param('id')),
+	jsonapify.read([roleResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:edit'),
-	jsonapify.update(roleResource, jsonapify.param('id')),
+	jsonapify.update([roleResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:remove'),
-	jsonapify.update(roleResource, jsonapify.param('id')),
+	jsonapify.update([roleResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 module.exports = exports = router;
-exports.Resource = roleResource;
+exports.resource = roleResource;

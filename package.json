@@ -26,16 +26,16 @@
   },
   "dependencies": {
     "ask-sync": "~0.1.5",
-    "async": "~1.3.0",
+    "async": "~1.4.0",
     "auth-rbac": "~0.5.18",
     "body-parser": "~1.13.2",
     "bunyan": "^1.4.0",
     "compression": "~1.5.1",
     "cors": "~2.7.1",
     "express": "~4.13.1",
-    "jsonapify": "0.4.11",
+    "jsonapify": "1.0.2",
     "lodash": "^3.10.0",
-    "mongoose": "~4.0.7",
+    "mongoose": "~4.1.0",
     "oauth2orize": "~1.0.1",
     "passport": "~0.2.2",
     "passport-anonymous": "^1.0.1",
@@ -48,7 +48,7 @@
     "uid2": "0.0.3"
   },
   "devDependencies": {
-    "chai": "~3.0.0",
+    "chai": "~3.2.0",
     "mocha": "~2.2.5",
     "sinon": "~1.15.4",
     "sinon-chai": "~2.8.0"

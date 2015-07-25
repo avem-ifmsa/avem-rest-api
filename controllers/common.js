@@ -1,8 +1,8 @@
 var async = require('async');
-var auth = require('../authority');
 var jsonapify = require('jsonapify');
-var passport = require('../passport');
 
+var auth = require('../authority');
+var passport = require('../passport');
 var Session = require('../models/session');
 var AccessToken = require('../models/accessToken');
 

@@ -1,31 +1,32 @@
-var common = require('./common');
 var express = require('express');
-var logger = require('../logger');
 var jsonapify = require('jsonapify');
 
+var common = require('./common');
+var logger = require('../logger');
 var User = require('../models/user');
-var roleResource = require('./roles').Resource;
-var userResource = jsonapify.resource(User, {
-	type: 'users',
-	id: {
-		value: jsonapify.property('_id'),
+var roleResource = require('./roles').resource;
+
+var userResource = new jsonapify.Resource(User, {
+	'type': 'users',
+	'id': {
+		value: new jsonapify.Property('_id'),
 		writable: false,
 	},
-	links: {
-		self: {
-			value: jsonapify.template('/users/{_id}'),
+	'links': {
+		'self': {
+			value: new jsonapify.Template('/users/${_id}'),
 			writable: false,
 		},
 	},
-	attributes: {
-		email: jsonapify.property('email'),
-		password: {
-			value: jsonapify.property('password'),
+	'attributes': {
+		'email': new jsonapify.Property('email'),
+		'password': {
+			value: new jsonapify.Property('password'),
 			readable: false,
 		},
 	},
-	relationships: {
-		role: jsonapify.ref(roleResource, 'role'),
+	'relationships': {
+		'role': new jsonapify.Ref(roleResource, 'role'),
 	},
 });
 
@@ -72,20 +73,20 @@ function userEditPrivilege(req) {
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(userEditPrivilege),
-	jsonapify.read(userResource, jsonapify.param('id')),
+	jsonapify.read([userResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(userEditPrivilege),
-	jsonapify.update(userResource, jsonapify.param('id')),
+	jsonapify.update([userResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSelf('user:remove')),
-	jsonapify.delete(userResource, jsonapify.param('id')),
+	jsonapify.delete([userResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 module.exports = exports = router;
-exports.Resource = userResource;
+exports.resource = userResource;

@@ -1,5 +1,6 @@
-var common = require('./common');
 var express = require('express');
+
+var common = require('./common');
 var logger = require('../logger');
 var oauth2 = require('../oauth2');
 

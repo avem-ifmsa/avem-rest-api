@@ -1,27 +1,28 @@
 var async = require('async');
-var common = require('./common');
 var express = require('express');
-var logger = require('../logger');
 var jsonapify = require('jsonapify');
 
+var common = require('./common');
+var logger = require('../logger');
 var AccessToken = require('../models/accessToken');
 var RefreshToken = require('../models/refreshToken');
-var sessionResource = require('./sessions').Resource;
-var refreshTokenResource = jsonapify.resource(RefreshToken, {
-	type: 'refresh-tokens',
-	id: {
-		value: jsonapify.property('value'),
+var sessionResource = require('./sessions').resource;
+
+var refreshTokenResource = new jsonapify.Resource(RefreshToken, {
+	'type': 'refresh-tokens',
+	'id': {
+		value: new jsonapify.Property('value'),
 		writable: false,
 	},
-	links: {
-		self: {
-			value: jsonapify.template('/refresh-tokens/{value}'),
+	'links': {
+		'self': {
+			value: new jsonapify.Template('/refresh-tokens/${value}'),
 			writable: false,
 		},
 	},
-	relationships: {
-		session: {
-			value: jsonapify.ref(sessionResource, 'session'),
+	'relationships': {
+		'session': {
+			value: new jsonapify.Ref(sessionResource, 'session'),
 			writable: false,
 		},
 	},
@@ -61,14 +62,14 @@ function ifNotTokenOwner(priv) {
 router.get('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:read')),
-	jsonapify.read(refreshTokenResource, { value: jsonapify.param('value') }),
+	jsonapify.read([refreshTokenResource, { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:remove')),
-	jsonapify.delete(refreshTokenResource, { value: jsonapify.param('value') }),
+	jsonapify.delete([refreshTokenResource, { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 module.exports = exports = router;
-exports.Resource = refreshTokenResource;
+exports.resource = refreshTokenResource;

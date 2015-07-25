@@ -1,30 +1,31 @@
-var common = require('./common');
 var express = require('express');
-var logger = require('../logger');
 var jsonapify = require('jsonapify');
 
+var common = require('./common');
+var logger = require('../logger');
 var Session = require('../models/session');
-var userResource = require('./users').Resource;
-var clientResource = require('./clients').Resource;
-var sessionResource = jsonapify.resource(Session, {
-	type: 'sessions',
-	id: {
-		value: jsonapify.property('_id'),
+var userResource = require('./users').resource;
+var clientResource = require('./clients').resource;
+
+var sessionResource = new jsonapify.Resource(Session, {
+	'type': 'sessions',
+	'id': {
+		value: new jsonapify.Property('_id'),
 		writable: false,
 	},
-	links: {
-		self: {
-			value: jsonapify.template('/sessions/{_id}'),
+	'links': {
+		'self': {
+			value: new jsonapify.Template('/sessions/${_id}'),
 			writable: false,
 		},
 	},
-	relationships: {
-		user: {
-			value: jsonapify.ref(userResource, 'user'),
+	'relationships': {
+		'user': {
+			value: new jsonapify.Ref(userResource, 'user'),
 			writable: false,
 		},
 		'owner-client': {
-			value: jsonapify.ref(clientResource, 'ownerClient'),
+			value: new jsonapify.Ref(clientResource, 'ownerClient'),
 			writable: false,
 		},
 	},
@@ -52,20 +53,20 @@ function ifNotSessionOwner(priv) {
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:read')),
-	jsonapify.read(sessionResource, jsonapify.param('id')),
+	jsonapify.read([sessionResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:edit')),
-	jsonapify.update(sessionResource, jsonapify.param('id')),
+	jsonapify.update([sessionResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:remove')),
-	jsonapify.delete(sessionResource, jsonapify.param('id')),
+	jsonapify.delete([sessionResource, jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 module.exports = exports = router;
-exports.Resource = sessionResource;
+exports.resource = sessionResource;
