@@ -19,7 +19,7 @@ function requirePrivilege(priv) {
 	});
 	
 	function sendAccessDenied(req, res, next) {
-		next(new jsonapify.errors.HttpError(401));
+		next(new jsonapify.errors.HttpError(403));
 	}
 }
 
