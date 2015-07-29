@@ -1,3 +1,0 @@
-var server = require('../');
-var config = require('../config');
-server.listen(config.server.port);

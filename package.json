@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "reset": "node ./bin/reset",
-    "start": "node ./bin/server",
-    "config": "node ./bin/config",
-    "init-db": "node ./bin/init-db"
+    "reset": "node ./dist/bin/reset.js",
+    "start": "node ./dist/bin/server.js",
+    "config": "node ./dist/bin/config.js",
+    "init-db": "node ./dist/bin/init-db.js"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "compression": "~1.5.1",
     "cors": "~2.7.1",
     "express": "~4.13.1",
-    "jsonapify": "1.0.2",
+    "jsonapify": "1.1.0",
     "lodash": "^3.10.0",
     "mongoose": "~4.1.0",
     "oauth2orize": "~1.0.1",
@@ -49,6 +49,9 @@
   },
   "devDependencies": {
     "chai": "~3.2.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-sourcemaps": "^1.5.2",
     "mocha": "~2.2.5",
     "sinon": "~1.15.4",
     "sinon-chai": "~2.8.0"
