@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import * as authRbac from 'auth-rbac';
+import authRbac from 'auth-rbac';
 
 import User from './models/User';
 import Role from './models/Role';
