@@ -2,9 +2,9 @@ import async from 'async';
 import {Router} from 'express';
 import jsonapify, {Resource, Property, Template} from 'jsonapify';
 
+import {Role} from '../models';
 import * as common from './common';
 import * as logger from '../logger';
-import {Role} from '../models';
 import {resource as clientResource} from './clients';
 
 const roleResource = new Resource(Role, {

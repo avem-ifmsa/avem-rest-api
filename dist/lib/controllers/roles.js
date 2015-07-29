@@ -18,6 +18,8 @@ var _jsonapify = require('jsonapify');
 
 var _jsonapify2 = _interopRequireDefault(_jsonapify);
 
+var _models = require('../models');
+
 var _common = require('./common');
 
 var common = _interopRequireWildcard(_common);
@@ -25,8 +27,6 @@ var common = _interopRequireWildcard(_common);
 var _logger = require('../logger');
 
 var logger = _interopRequireWildcard(_logger);
-
-var _models = require('../models');
 
 var _clients = require('./clients');
 
