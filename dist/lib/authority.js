@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _lodash = require('lodash');
@@ -12,7 +14,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 var _authRbac = require('auth-rbac');
 
-var _authRbac2 = _interopRequireDefault(_authRbac);
+var authRbac = _interopRequireWildcard(_authRbac);
 
 var _modelsUser = require('./models/User');
 
@@ -22,7 +24,7 @@ var _modelsRole = require('./models/Role');
 
 var _modelsRole2 = _interopRequireDefault(_modelsRole);
 
-var authority = (0, _authRbac2['default'])({
+var authority = authRbac({
 	getUser: function getUser(req, callback) {
 		callback(null, req.user);
 	},
@@ -37,8 +39,8 @@ var authority = (0, _authRbac2['default'])({
 });
 
 exports['default'] = authority;
-var identify = _lodash2['default'].constant(_authRbac2['default'].identify(authority));
+var identify = _lodash2['default'].constant(authRbac.identify(authority));
 exports.identify = identify;
-var requirePrivilege = _authRbac2['default'].requirePrivilege;
+var requirePrivilege = authRbac.requirePrivilege;
 exports.requirePrivilege = requirePrivilege;
 //# sourceMappingURL=../lib/authority.js.map
