@@ -61,8 +61,8 @@ function ifNotSessionOwner(priv) {
 		var user = req.auth.user.info;
 		var sessionId = req.params.id;
 		_models.Session.findById(sessionId, function (err, session) {
-			if (err || !session) return cb(err, false);
-			callback(null, session.user !== user._id ? priv : false);
+			if (err || !session) return callback(err, false);
+			callback(null, session.user.equals(user._id) ? false : priv);
 		});
 	};
 }
