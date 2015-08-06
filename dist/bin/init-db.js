@@ -18,17 +18,17 @@ var _config = require('../../config');
 
 var _config2 = _interopRequireDefault(_config);
 
-var _libModelsUser = require('../lib/models/User');
+var _appModelsUser = require('../app/models/User');
 
-var _libModelsUser2 = _interopRequireDefault(_libModelsUser);
+var _appModelsUser2 = _interopRequireDefault(_appModelsUser);
 
-var _libModelsRole = require('../lib/models/Role');
+var _appModelsRole = require('../app/models/Role');
 
-var _libModelsRole2 = _interopRequireDefault(_libModelsRole);
+var _appModelsRole2 = _interopRequireDefault(_appModelsRole);
 
-var _libModelsClient = require('../lib/models/Client');
+var _appModelsClient = require('../app/models/Client');
 
-var _libModelsClient2 = _interopRequireDefault(_libModelsClient);
+var _appModelsClient2 = _interopRequireDefault(_appModelsClient);
 
 _mongoose2['default'].connect(_config2['default'].db.mongo.url);
 
@@ -80,7 +80,7 @@ function createTrustedClient(done) {
 		name: _askSync2['default'].string('Client name'),
 		redirectUri: _askSync2['default'].string('Client redirect URI', { nullable: true })
 	});
-	var client = new _libModelsClient2['default']();
+	var client = new _appModelsClient2['default']();
 	client.name = data.name;
 	client.redirectUri = data.redirectUri;
 	client.trusted = true;
@@ -96,7 +96,7 @@ function createTrustedClient(done) {
 }
 
 function createAdminRole(client, done) {
-	var role = new _libModelsRole2['default']();
+	var role = new _appModelsRole2['default']();
 	role.name = 'admin';
 	role.description = 'Privileged role for administrative tasks';
 	role.privileges = ['user:enum', 'user:add', 'user:read', 'user:edit', 'user:edit-role', 'user:remove', 'role:enum', 'role:add', 'role:read', 'role:edit', 'role:remove', 'client:enum', 'client:add', 'client:read', 'client:edit', 'client:trust', 'client:remove', 'access-token:enum', 'access-token:read', 'access-token:remove', 'refresh-token:enum', 'refresh-token:read', 'refresh-token:remove', 'session:enum', 'session:read', 'session:edit', 'session:remove'];
@@ -108,7 +108,7 @@ function createAdminRole(client, done) {
 }
 
 function createUserRole(client, done) {
-	var role = new _libModelsRole2['default']();
+	var role = new _appModelsRole2['default']();
 	role.name = 'user';
 	role.privileges = [];
 	role.description = 'Standard role for regular users';
@@ -128,7 +128,7 @@ function createAdminUser(role, done) {
 			maxLength: _config2['default'].security.password.maxLength
 		})
 	});
-	var user = new _libModelsUser2['default']();
+	var user = new _appModelsUser2['default']();
 	user.role = role._id;
 	user.email = data.email;
 	user.password = data.password;

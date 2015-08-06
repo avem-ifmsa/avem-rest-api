@@ -3,9 +3,9 @@ import ask from 'ask-sync';
 import mongoose from 'mongoose';
 
 import config from '../../config';
-import User from '../lib/models/User';
-import Role from '../lib/models/Role';
-import Client from '../lib/models/Client';
+import User from '../app/models/User';
+import Role from '../app/models/Role';
+import Client from '../app/models/Client';
 
 mongoose.connect(config.db.mongo.url);
 

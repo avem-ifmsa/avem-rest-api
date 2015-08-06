@@ -1,3 +1,3 @@
-import server from '../lib/';
+import server from '../app/';
 import config from '../../config';
 server.listen(config.server.port);
