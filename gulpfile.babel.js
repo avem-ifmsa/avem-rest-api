@@ -1,6 +1,6 @@
-var gulp = require('gulp');
-var babel = require('gulp-babel');
-var sourcemaps = require('gulp-sourcemaps');
+import gulp from 'gulp';
+import babel from 'gulp-babel';
+import sourcemaps from 'gulp-sourcemaps';
 
 gulp.task('build', function() {
 	gulp.src('src/**/*.js')
