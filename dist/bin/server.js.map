@@ -1,1 +1,0 @@
-{"version":3,"sources":["bin/server.js"],"names":[],"mappings":";;;;mBAAmB,SAAS;;;;sBACT,cAAc;;;;AACjC,iBAAO,MAAM,CAAC,oBAAO,MAAM,CAAC,IAAI,CAAC,CAAC","file":"bin/server.js","sourcesContent":["import server from '../app/';\nimport config from '../../config';\nserver.listen(config.server.port);\n"],"sourceRoot":"/source/"}
