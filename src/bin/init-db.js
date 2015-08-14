@@ -122,7 +122,7 @@ function createAdminUser(role, done) {
 		if (err) return done(err, false);
 		console.log('Created admin user:');
 		console.log('- User email: %s', user.email);
-		console.log('- User password: %s', data.password); 
+		console.log('- User password: %s', data.password);
 		done(null, user);
 	});
 }

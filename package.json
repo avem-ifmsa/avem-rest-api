@@ -28,6 +28,7 @@
     "ask-sync": "~0.1.5",
     "async": "~1.4.2",
     "auth-rbac": "~1.0.0",
+    "babel-runtime": "^5.8.20",
     "body-parser": "~1.13.3",
     "bunyan": "^1.4.0",
     "compression": "~1.5.2",

@@ -14,7 +14,7 @@ import AccessToken from './models/AccessToken';
 passport.use(new AnonymousStrategy);
 
 function authenticateClientWithSecret(clientId, clientSecret, done) {
-	Client.findById(clientId, (err, client) => {
+	Client.findOne({ name: clientId }, (err, client) => {
 		if (err || !client) return done(err, false);
 		if (client.secret !== clientSecret) return done(null, false);
 		done(null, client);
@@ -25,7 +25,7 @@ passport.use('client-basic', new BasicStrategy(authenticateClientWithSecret));
 passport.use('client-password', new ClientPasswordStrategy(authenticateClientWithSecret));
 
 passport.use('client-public', new PublicClientStrategy((clientId, done) => {
-	Client.findById(clientId, done);
+	Client.findOne({ name: clientId }, done);
 }));
 
 passport.use('token-bearer', new BearerStrategy((bearer, done) => {
