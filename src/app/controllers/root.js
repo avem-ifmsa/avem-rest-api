@@ -6,8 +6,7 @@ import * as common from './common';
 
 const router = Router();
 
-router.get('/', 
-	common.authenticate(['token-bearer', 'anonymous']),
+router.get('/', common.authenticate(['token-bearer', 'anonymous']),
 	(req, res) => {
 		const response = new Response(res);
 		if (req.user) {

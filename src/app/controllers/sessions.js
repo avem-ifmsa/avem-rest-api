@@ -1,11 +1,12 @@
 import {Router} from 'express';
-import jsonapify, {Resource, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Resource, Registry, Property, Template, Ref} from 'jsonapify';
+
+import './users';
+import './clients';
 
 import * as common from './common';
 import * as logger from '../logger';
 import {Session} from '../models';
-import {resource as userResource} from './users';
-import {resource as clientResource} from './clients';
 
 const sessionResource = new Resource(Session, {
 	'type': 'sessions',
@@ -21,11 +22,11 @@ const sessionResource = new Resource(Session, {
 	},
 	'relationships': {
 		'user': {
-			value: new Ref(userResource, 'user'),
+			value: new Ref('User', 'user'),
 			writable: false,
 		},
 		'owner-client': {
-			value: new Ref(clientResource, 'ownerClient'),
+			value: new Ref('Client', 'ownerClient'),
 			writable: false,
 		},
 	},
@@ -36,7 +37,7 @@ var router = Router();
 router.get('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('session:enum'),
-	jsonapify.enumerate(sessionResource),
+	jsonapify.enumerate('Session'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 function ifNotSessionOwner(priv) {
@@ -53,20 +54,19 @@ function ifNotSessionOwner(priv) {
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:read')),
-	jsonapify.read([sessionResource, jsonapify.param('id')]),
+	jsonapify.read(['Session', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:edit')),
-	jsonapify.update([sessionResource, jsonapify.param('id')]),
+	jsonapify.update(['Session', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:remove')),
-	jsonapify.remove([sessionResource, jsonapify.param('id')]),
+	jsonapify.remove(['Session', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
-export { sessionResource as resource };

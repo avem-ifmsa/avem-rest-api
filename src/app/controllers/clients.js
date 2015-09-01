@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {Router} from 'express';
-import jsonapify, {Resource, Template, Property} from 'jsonapify';
+import jsonapify, {Resource, Registry, Template, Property} from 'jsonapify';
 
 import * as common from './common';
 import * as logger from '../logger';
@@ -29,12 +29,14 @@ const clientResource = new Resource(Client, {
 	},
 });
 
+Registry.add('Client', clientResource);
+
 const router = Router();
 
 router.get('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:enum'),
-	jsonapify.enumerate(clientResource),
+	jsonapify.enumerate('Client'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 function clientTrustPrivilege(req, cb) {
@@ -53,27 +55,26 @@ router.post('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:add'),
 	common.requirePrivilege(clientTrustPrivilege),
-	jsonapify.create(clientResource),
+	jsonapify.create('Client'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:read'),
-	jsonapify.read([clientResource, jsonapify.param('id')]),
+	jsonapify.read(['Client', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:edit'),
 	common.requirePrivilege(clientTrustPrivilege),
-	jsonapify.update([clientResource, jsonapify.param('id')]),
+	jsonapify.update(['Client', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:remove'),
-	jsonapify.remove([clientResource, jsonapify.param('id')]),
+	jsonapify.remove(['Client', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
-export { clientResource as resource };

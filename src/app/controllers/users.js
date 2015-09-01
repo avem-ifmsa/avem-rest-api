@@ -1,10 +1,10 @@
 import {Router} from 'express';
 import jsonapify, {Resource, Property, Template, Ref} from 'jsonapify';
 
+import './roles';
 import * as common from './common';
 import * as logger from '../logger';
 import {User} from '../models';
-import {resource as roleResource} from './roles';
 
 var userResource = new Resource(User, {
 	'type': 'users',
@@ -26,7 +26,7 @@ var userResource = new Resource(User, {
 		},
 	},
 	'relationships': {
-		'role': new Ref(roleResource, 'role'),
+		'role': new Ref('Role', 'role'),
 	},
 });
 
@@ -35,13 +35,13 @@ var router = Router();
 router.get('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('user:enum'),
-	jsonapify.enumerate(userResource),
+	jsonapify.enumerate('User'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.post('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('user:add'),
-	jsonapify.create(userResource),
+	jsonapify.create('User'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 function userIsSelf(req) {
@@ -58,8 +58,8 @@ function ifNotSelf(priv) {
 
 function userEditRolePrivilege(req) {
 	var user = req.auth.user.info;
-	var path = 'body.data.relationships.role.id';
-	var newUserRole = _.get(req, path);
+	var path = 'data.relationships.role.id';
+	var newUserRole = _.get(req.body, path);
 	if (!user || !newUserRole) return false;
 	var sameRole = user.role.equals(newUserRole);
 	return sameRole ? false : 'user:edit-role';
@@ -73,20 +73,19 @@ function userEditPrivilege(req) {
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(userEditPrivilege),
-	jsonapify.read([userResource, jsonapify.param('id')]),
+	jsonapify.read(['User', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(userEditPrivilege),
-	jsonapify.update([userResource, jsonapify.param('id')]),
+	jsonapify.update(['User', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSelf('user:remove')),
-	jsonapify.remove([userResource, jsonapify.param('id')]),
+	jsonapify.remove(['User', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
-export { userResource as resource };

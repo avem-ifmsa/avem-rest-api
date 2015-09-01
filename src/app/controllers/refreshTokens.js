@@ -1,11 +1,11 @@
 import async from 'async';
 import {Router} from 'express';
-import jsonapify, {Resource, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Resource, Registry, Property, Template, Ref} from 'jsonapify';
 
+import './sessions';
 import * as common from './common';
 import * as logger from '../logger';
 import {AccessToken, RefreshToken} from '../models';
-import {resource as sessionResource} from './sessions';
 
 const refreshTokenResource = new Resource(RefreshToken, {
 	'type': 'refresh-tokens',
@@ -21,18 +21,20 @@ const refreshTokenResource = new Resource(RefreshToken, {
 	},
 	'relationships': {
 		'session': {
-			value: new Ref(sessionResource, 'session'),
+			value: new Ref('Session', 'session'),
 			writable: false,
 		},
 	},
 });
+
+Registry.add('RefreshToken', refreshTokenResource);
 
 const router = Router();
 
 router.get('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('refresh-token:enum'),
-	jsonapify.enumerate(refreshTokenResource),
+	jsonapify.enumerate('RefreshToken'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 function ifNotTokenOwner(priv) {
@@ -61,14 +63,13 @@ function ifNotTokenOwner(priv) {
 router.get('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:read')),
-	jsonapify.read([refreshTokenResource, { value: jsonapify.param('value') }]),
+	jsonapify.read(['RefreshToken', { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:remove')),
-	jsonapify.remove([refreshTokenResource, { value: jsonapify.param('value') }]),
+	jsonapify.remove(['RefreshToken', { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
-export { refreshTokenResource as resource };

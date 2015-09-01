@@ -1,19 +1,8 @@
-import rootRouter from './root';
-import usersRouter from './users';
-import rolesRouter from './roles';
-import oauth2Router from './oauth2';
-import clientsRouter from './clients';
-import sessionsRouter from './sessions';
-import accessTokensRouter from './accessTokens';
-import refreshTokensRouter from './refreshTokens';
-
-export {
-	rootRouter as root,
-	usersRouter as users,
-	rolesRouter as roles,
-	oauth2Router as oauth2,
-	clientsRouter as clients,
-	sessionsRouter as sessions,
-	accessTokensRouter as accessTokens,
-	refreshTokensRouter as refreshTokens,
-};
+export { default as root } from './root';
+export { default as users } from './users';
+export { default as roles } from './roles';
+export { default as oauth2 } from './oauth2';
+export { default as clients } from './clients';
+export { default as sessions } from './sessions';
+export { default as accessTokens } from './accessTokens';
+export { default as refreshTokens } from './refreshTokens';

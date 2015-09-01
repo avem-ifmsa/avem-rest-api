@@ -1,10 +1,10 @@
 import {Router} from 'express';
-import jsonapify, {Resource, Template, Property, Ref} from 'jsonapify';
+import jsonapify, {Resource, Registry, Template, Property, Ref} from 'jsonapify';
 
+import './sessions';
 import * as common from './common';
 import * as logger from '../logger';
 import {AccessToken} from '../models';
-import {resource as sessionResource} from './sessions';
 
 const accessTokenResource = new Resource(AccessToken, {
 	'type': 'access-tokens',
@@ -34,18 +34,20 @@ const accessTokenResource = new Resource(AccessToken, {
 	},
 	'relationships': {
 		'session': {
-			value: new Ref(sessionResource, 'session'),
+			value: new Ref('Session', 'session'),
 			writable: false,
 		},
 	},
 });
+
+Registry.add('AccessToken', accessTokenResource);
 
 const router = Router();
 
 router.get('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('access-token:enum'),
-	jsonapify.enumerate(accessTokenResource),
+	jsonapify.enumerate('AccessToken'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 function ifNotTokenOwner(priv) {
@@ -59,14 +61,13 @@ function ifNotTokenOwner(priv) {
 router.get('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('access-token:read')),
-	jsonapify.read([accessTokenResource, { value: jsonapify.param('value') }]),
+	jsonapify.read(['AccessToken', { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('access-token:remove')),
-	jsonapify.remove([accessTokenResource, { value: jsonapify.param('value') }]),
+	jsonapify.remove(['AccessToken', { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
-export { accessTokenResource as resource };

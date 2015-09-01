@@ -1,11 +1,11 @@
 import async from 'async';
 import {Router} from 'express';
-import jsonapify, {Resource, Property, Template} from 'jsonapify';
+import jsonapify, {Resource, Registry, Property, Template} from 'jsonapify';
 
+import './clients';
 import {Role} from '../models';
 import * as common from './common';
 import * as logger from '../logger';
-import {resource as clientResource} from './clients';
 
 const roleResource = new Resource(Role, {
 	'type': 'roles',
@@ -31,25 +31,25 @@ const router = Router();
 router.get('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:enum'),
-	jsonapify.enumerate(roleResource),
+	jsonapify.enumerate('Role'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.post('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:add'),
-	jsonapify.create(roleResource),
+	jsonapify.create('Role'),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:read'),
-	jsonapify.read([roleResource, jsonapify.param('id')]),
+	jsonapify.read(['Role', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.put('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:edit'),
-	jsonapify.update([roleResource, jsonapify.param('id')]),
+	jsonapify.update(['Role', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.delete('/:id',
@@ -59,4 +59,3 @@ router.delete('/:id',
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
-export { roleResource as resource };
