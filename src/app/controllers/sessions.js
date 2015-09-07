@@ -32,6 +32,8 @@ const sessionResource = new Resource(Session, {
 	},
 });
 
+Registry.add('Session', sessionResource);
+
 var router = Router();
 
 router.get('/',

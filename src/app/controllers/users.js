@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import jsonapify, {Resource, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Resource, Registry, Property, Template, Ref} from 'jsonapify';
 
 import './roles';
 import * as common from './common';
@@ -29,6 +29,8 @@ var userResource = new Resource(User, {
 		'role': new Ref('Role', 'role'),
 	},
 });
+
+Registry.add('User', userResource);
 
 var router = Router();
 

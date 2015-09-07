@@ -26,6 +26,8 @@ const roleResource = new Resource(Role, {
 	},
 });
 
+Registry.add('Role', roleResource);
+
 const router = Router();
 
 router.get('/',
