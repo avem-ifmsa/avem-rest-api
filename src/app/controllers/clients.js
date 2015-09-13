@@ -40,10 +40,11 @@ router.get('/',
 	logger.logErrors(), jsonapify.errorHandler());
 
 function clientTrustPrivilege(req, cb) {
-	var id = req.params.id;
-	var path = 'body.data.attributes.trusted';
-	var trusted = _.get(req, path);
-	if (!trusted) return _.defer(cb, null, false);
+	let id = req.params.id;
+	let newTrusted = false;
+	if (req.method === 'post' || req.method === 'put')
+		newTrusted = _.get(req.body, 'data.attributes.trusted');
+	if (!newTrusted) return cb(null, false);
 	Client.findById(id, function(err, client) {
 		if (err) return cb(err);
 		if (!client) return cb(null, false);

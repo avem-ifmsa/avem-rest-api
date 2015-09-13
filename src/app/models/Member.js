@@ -29,7 +29,11 @@ const memberSchema = new Schema({
 	birthday: {
 		type: Number,
 	},
-	activeUntil: {
+	active: {
+		type: Boolean,
+		required: true,
+	},
+	renewDate: {
 		type: Date,
 		required: true,
 	},
@@ -52,8 +56,8 @@ memberSchema.virtual('age').get(function() {
 	return new Date - this.birthday;
 });
 
-memberSchema.virtual('active').get(function() {
-	return this.activeUntil < new Date;
+memberSchema.virtual('needsRenovation').get(function() {
+	return this.renewDate < new Date;
 });
 
 memberSchema.methods.getPoints = function(callback) {

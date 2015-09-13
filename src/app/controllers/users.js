@@ -49,7 +49,7 @@ router.post('/',
 function userIsSelf(req) {
 	var id = req.params.id;
 	var user = req.auth.user.info;
-	return user._id === id;
+	return user._id.equals(id);
 }
 
 function ifNotSelf(priv) {
@@ -59,11 +59,12 @@ function ifNotSelf(priv) {
 }
 
 function userEditRolePrivilege(req) {
-	var user = req.auth.user.info;
-	var path = 'data.relationships.role.id';
-	var newUserRole = _.get(req.body, path);
-	if (!user || !newUserRole) return false;
-	var sameRole = user.role.equals(newUserRole);
+	let user = req.auth.user.info;
+	if (!user) return false;
+	let newRole = user.role;
+	if (req.method === 'put')
+		newRole = _.get(req.body, 'data.relationships.role.id');
+	var sameRole = user.role.equals(newRole);
 	return sameRole ? false : 'user:edit-role';
 }
 
@@ -74,7 +75,6 @@ function userEditPrivilege(req) {
 
 router.get('/:id',
 	common.authenticate('token-bearer'),
-	common.requirePrivilege(userEditPrivilege),
 	jsonapify.read(['User', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
