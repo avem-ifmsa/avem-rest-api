@@ -1,3 +1,0 @@
-exports.scryptParams = function(scrypt, settings) {
-	return scrypt.params(settings.maxtime, settings.maxmem, settings.maxmemfrac);
-};
