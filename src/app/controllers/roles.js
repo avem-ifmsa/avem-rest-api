@@ -1,6 +1,6 @@
 import async from 'async';
 import {Router} from 'express';
-import jsonapify, {Resource, Registry, Property, Template} from 'jsonapify';
+import jsonapify, {Resource, Runtime, Property, Template} from 'jsonapify';
 
 import './clients';
 import {Role} from '../models';
@@ -26,7 +26,7 @@ const roleResource = new Resource(Role, {
 	},
 });
 
-Registry.add('Role', roleResource);
+Runtime.addResource('Role', roleResource);
 
 const router = Router();
 

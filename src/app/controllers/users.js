@@ -1,12 +1,12 @@
 import {Router} from 'express';
-import jsonapify, {Resource, Registry, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Resource, Runtime, Property, Template, Ref} from 'jsonapify';
 
 import './roles';
 import * as common from './common';
 import * as logger from '../logger';
 import {User} from '../models';
 
-var userResource = new Resource(User, {
+const userResource = new Resource(User, {
 	'type': 'users',
 	'id': {
 		value: new Property('_id'),
@@ -30,7 +30,7 @@ var userResource = new Resource(User, {
 	},
 });
 
-Registry.add('User', userResource);
+Runtime.addResource('User', userResource);
 
 var router = Router();
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {Router} from 'express';
-import jsonapify, {Resource, Registry, Template, Property} from 'jsonapify';
+import jsonapify, {Resource, Runtime, Template, Property} from 'jsonapify';
 
 import * as common from './common';
 import * as logger from '../logger';
@@ -29,7 +29,7 @@ const clientResource = new Resource(Client, {
 	},
 });
 
-Registry.add('Client', clientResource);
+Runtime.addResource('Client', clientResource);
 
 const router = Router();
 

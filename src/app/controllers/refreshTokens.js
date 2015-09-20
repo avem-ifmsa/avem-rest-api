@@ -1,6 +1,6 @@
 import async from 'async';
 import {Router} from 'express';
-import jsonapify, {Resource, Registry, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Resource, Runtime, Property, Template, Ref} from 'jsonapify';
 
 import './sessions';
 import * as common from './common';
@@ -27,7 +27,7 @@ const refreshTokenResource = new Resource(RefreshToken, {
 	},
 });
 
-Registry.add('RefreshToken', refreshTokenResource);
+Runtime.addResource('RefreshToken', refreshTokenResource);
 
 const router = Router();
 

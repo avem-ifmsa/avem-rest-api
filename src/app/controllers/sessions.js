@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import jsonapify, {Resource, Registry, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Resource, Runtime, Property, Template, Ref} from 'jsonapify';
 
 import './users';
 import './clients';
@@ -32,7 +32,7 @@ const sessionResource = new Resource(Session, {
 	},
 });
 
-Registry.add('Session', sessionResource);
+Runtime.addResource('Session', sessionResource);
 
 var router = Router();
 
