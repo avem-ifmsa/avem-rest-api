@@ -34,7 +34,7 @@
     "compression": "~1.5.2",
     "cors": "~2.7.1",
     "express": "~4.13.3",
-    "jsonapify": "1.6.0",
+    "jsonapify": "git+https://github.com/alex94puchades/jsonapify.git",
     "lodash": "^3.10.1",
     "mongoose": "~4.1.7",
     "oauth2orize": "~1.0.1",
