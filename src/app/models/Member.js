@@ -27,23 +27,22 @@ const memberSchema = new Schema({
 		type: String,
 	},
 	birthday: {
-		type: Number,
-	},
-	active: {
-		type: Boolean,
-		required: true,
+		type: Date,
 	},
 	renewDate: {
 		type: Date,
 		required: true,
 	},
+	performedActivities: [{
+		type: Schema.ObjectId,
+		ref: 'Activity',
+	}],
 	subscribedActivities: [{
 		type: Schema.ObjectId,
 		ref: 'Activity',
 	}],
-	performedActivities: [{
-		type: Schema.ObjectId,
-		ref: 'Activity',
+	subscribedCategories: [{
+		type: String,
 	}],
 });
 
@@ -56,18 +55,15 @@ memberSchema.virtual('age').get(function() {
 	return new Date - this.birthday;
 });
 
-memberSchema.virtual('needsRenovation').get(function() {
-	return this.renewDate < new Date;
+memberSchema.virtual('active').get(function() {
+	return this.renewDate > new Date;
 });
 
 memberSchema.methods.getPoints = function(callback) {
 	var query = Transaction.find({ member: this._id });
 	query.sort({ _id: 1 }).select('points').exec((err, transactions) => {
 		if (err) return callback(err);
-		var transactionPoints = _(transactions).pluck('points');
-		callback(null, transactionPoints.reduce((total, points) => {
-			return Math.max(0, total + points);
-		}));
+		callback(null, _(transactions).pluck('points').reduce(_.add));
 	});
 };
 

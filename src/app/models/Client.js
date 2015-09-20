@@ -33,7 +33,9 @@ const clientSchema = new mongoose.Schema({
 clientSchema.pre('remove', function(next) {
 	Session.find({ clientOwner: this._id }, (err, results) => {
 		if (err) return next(err);
-		async.each(results, (session, next) => session.remove(next));
+		async.each(results, (session, next) => {
+			session.remove(next);
+		});
 	});
 });
 
