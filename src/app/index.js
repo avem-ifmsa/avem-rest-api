@@ -12,7 +12,6 @@ import * as controllers from './controllers';
 mongoose.connect(config.db.mongo.url);
 
 const app = express();
-export default app;
 
 app.set('json spaces', 2);
 
@@ -24,10 +23,17 @@ app.use(passport.initialize());
 app.use(logger.logRequest());
 
 app.use('/', controllers.root);
+
 app.use('/oauth2', controllers.oauth2);
-app.use('/users', controllers.users);
-app.use('/roles', controllers.roles);
 app.use('/clients', controllers.clients);
 app.use('/sessions', controllers.sessions);
 app.use('/access-tokens', controllers.accessTokens);
 app.use('/refresh-tokens', controllers.refreshTokens);
+
+app.use('/users', controllers.users);
+app.use('/roles', controllers.roles);
+app.use('/members', controllers.members);
+app.use('/mb-members', controllers.mbMembers);
+app.use('/activities', controllers.activities);
+
+export default app;
