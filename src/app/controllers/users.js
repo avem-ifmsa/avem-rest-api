@@ -32,7 +32,7 @@ const userResource = new Resource(User, {
 
 Runtime.addResource('User', userResource);
 
-var router = Router();
+const router = Router();
 
 router.get('/',
 	common.authenticate('token-bearer'),
@@ -46,9 +46,26 @@ router.post('/',
 	jsonapify.create('User'),
 	logger.logErrors(), jsonapify.errorHandler());
 
+router.get('/:id',
+	common.authenticate('token-bearer'),
+	jsonapify.read(['User', jsonapify.param('id')]),
+	logger.logErrors(), jsonapify.errorHandler());
+
+router.put('/:id',
+	common.authenticate('token-bearer'),
+	common.requirePrivilege(userEditPrivilege),
+	jsonapify.update(['User', jsonapify.param('id')]),
+	logger.logErrors(), jsonapify.errorHandler());
+
+router.delete('/:id',
+	common.authenticate('token-bearer'),
+	common.requirePrivilege(ifNotSelf('user:remove')),
+	jsonapify.remove(['User', jsonapify.param('id')]),
+	logger.logErrors(), jsonapify.errorHandler());
+
 function userIsSelf(req) {
-	var id = req.params.id;
-	var user = req.auth.user.info;
+	let id = req.params.id;
+	let user = req.auth.user.info;
 	return user._id.equals(id);
 }
 
@@ -72,22 +89,5 @@ function userEditPrivilege(req) {
 	if (!userIsSelf(req)) return 'user:edit';
 	return userEditRolePrivilege(req);
 }
-
-router.get('/:id',
-	common.authenticate('token-bearer'),
-	jsonapify.read(['User', jsonapify.param('id')]),
-	logger.logErrors(), jsonapify.errorHandler());
-
-router.put('/:id',
-	common.authenticate('token-bearer'),
-	common.requirePrivilege(userEditPrivilege),
-	jsonapify.update(['User', jsonapify.param('id')]),
-	logger.logErrors(), jsonapify.errorHandler());
-
-router.delete('/:id',
-	common.authenticate('token-bearer'),
-	common.requirePrivilege(ifNotSelf('user:remove')),
-	jsonapify.remove(['User', jsonapify.param('id')]),
-	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;

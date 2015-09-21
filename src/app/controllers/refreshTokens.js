@@ -3,6 +3,7 @@ import {Router} from 'express';
 import jsonapify, {Resource, Runtime, Property, Template, Ref} from 'jsonapify';
 
 import './sessions';
+
 import * as common from './common';
 import * as logger from '../logger';
 import {AccessToken, RefreshToken} from '../models';
@@ -37,29 +38,6 @@ router.get('/',
 	jsonapify.enumerate('RefreshToken'),
 	logger.logErrors(), jsonapify.errorHandler());
 
-function ifNotTokenOwner(priv) {
-	return function(req, cb) {
-		async.parallel({
-			accessToken: function(cb) {
-				var token = common.extractAccessToken(req);
-				AccessToken.findOne({ value: token }, cb);
-			},
-			refreshToken: function(cb) {
-				var token = req.params.value;
-				RefreshToken.findOne({ value: token }, cb);
-			},
-		}, function(err, results) {
-			if (err) return cb(err);
-			if (!results.accessToken) return cb(null, false);
-			if (!results.refreshToken) return cb(null, false);
-			var accessTokenSessionId = results.accessToken.session;
-			var refreshTokenSessionId = results.refreshToken.session;
-			var tokenOwner = refreshTokenSessionId.equals(accessTokenSessionId);
-			cb(null, tokenOwner ? false : priv);
-		});
-	}
-}
-
 router.get('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:read')),
@@ -71,5 +49,28 @@ router.delete('/:value',
 	common.requirePrivilege(ifNotTokenOwner('refresh-token:remove')),
 	jsonapify.remove(['RefreshToken', { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
+
+function ifNotTokenOwner(priv) {
+	return (req, done) => {
+		async.parallel({
+			accessToken: next => {
+				let token = common.extractAccessToken(req);
+				AccessToken.findOne({ value: token }, next);
+			},
+			refreshToken: next => {
+				let token = req.params.value;
+				RefreshToken.findOne({ value: token }, next);
+			},
+		}, (err, results) => {
+			if (err) return done(err);
+			if (!results.accessToken) return done(null, false);
+			if (!results.refreshToken) return done(null, false);
+			let accessTokenSessid = results.accessToken.session;
+			let refreshTokenSessid = results.refreshToken.session;
+			let isTokenOwner = refreshTokenSessid.equals(accessTokenSessid);
+			done(null, isTokenOwner ? false : priv);
+		});
+	};
+}
 
 export default router;

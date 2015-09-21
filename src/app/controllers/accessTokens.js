@@ -50,14 +50,6 @@ router.get('/',
 	jsonapify.enumerate('AccessToken'),
 	logger.logErrors(), jsonapify.errorHandler());
 
-function ifNotTokenOwner(priv) {
-	return (req) => {
-		let token = req.params.value;
-		let bearer = common.extractAccessToken(req);
-		return token !== bearer ? priv : false;
-	};
-}
-
 router.get('/:value',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotTokenOwner('access-token:read')),
@@ -69,5 +61,13 @@ router.delete('/:value',
 	common.requirePrivilege(ifNotTokenOwner('access-token:remove')),
 	jsonapify.remove(['AccessToken', { value: jsonapify.param('value') }]),
 	logger.logErrors(), jsonapify.errorHandler());
+
+function ifNotTokenOwner(priv) {
+	return (req) => {
+		let token = req.params.value;
+		let bearer = common.extractAccessToken(req);
+		return token !== bearer ? priv : false;
+	};
+}
 
 export default router;

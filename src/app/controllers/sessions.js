@@ -42,17 +42,6 @@ router.get('/',
 	jsonapify.enumerate('Session'),
 	logger.logErrors(), jsonapify.errorHandler());
 
-function ifNotSessionOwner(priv) {
-	return (req, callback) => {
-		var user = req.auth.user.info;
-		var sessionId = req.params.id;
-		Session.findById(sessionId, (err, session) => {
-			if (err || !session) return callback(err, false);
-			callback(null, session.user.equals(user._id) ? false : priv);
-		});
-	};
-}
-
 router.get('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSessionOwner('session:read')),
@@ -70,5 +59,16 @@ router.delete('/:id',
 	common.requirePrivilege(ifNotSessionOwner('session:remove')),
 	jsonapify.remove(['Session', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
+
+function ifNotSessionOwner(priv) {
+	return (req, done) => {
+		let user = req.auth.user.info;
+		let sessionId = req.params.id;
+		Session.findById(sessionId, (err, session) => {
+			if (err || !session) return done(err, false);
+			done(null, session.user.equals(user._id) ? false : priv);
+		});
+	};
+}
 
 export default router;

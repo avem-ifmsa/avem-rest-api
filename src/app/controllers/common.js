@@ -25,7 +25,7 @@ export function requirePrivilege(priv) {
 export function currentSession(req, callback) {
 	var token = extractAccessToken(req);
 	async.waterfall([
-		next => {
+		(next) => {
 			AccessToken.findOne({ value: token }, next);
 		},
 		(accessToken, next) => {

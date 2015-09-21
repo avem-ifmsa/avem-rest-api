@@ -39,19 +39,6 @@ router.get('/',
 	jsonapify.enumerate('Client'),
 	logger.logErrors(), jsonapify.errorHandler());
 
-function clientTrustPrivilege(req, cb) {
-	let id = req.params.id;
-	let newTrusted = false;
-	if (req.method === 'post' || req.method === 'put')
-		newTrusted = _.get(req.body, 'data.attributes.trusted');
-	if (!newTrusted) return cb(null, false);
-	Client.findById(id, function(err, client) {
-		if (err) return cb(err);
-		if (!client) return cb(null, false);
-		cb(null, client.trusted ? false : 'client:trust');
-	});
-}
-
 router.post('/',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('client:add'),
@@ -77,5 +64,18 @@ router.delete('/:id',
 	common.requirePrivilege('client:remove'),
 	jsonapify.remove(['Client', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
+
+function clientTrustPrivilege(req, cb) {
+	let id = req.params.id;
+	let newTrusted = false;
+	if (req.method === 'post' || req.method === 'put')
+		newTrusted = _.get(req.body, 'data.attributes.trusted');
+	if (!newTrusted) return cb(null, false);
+	Client.findById(id, function(err, client) {
+		if (err) return cb(err);
+		if (!client) return cb(null, false);
+		cb(null, client.trusted ? false : 'client:trust');
+	});
+}
 
 export default router;
