@@ -63,7 +63,9 @@ memberSchema.methods.getPoints = function(callback) {
 	var query = Transaction.find({ member: this._id });
 	query.sort({ _id: 1 }).select('points').exec((err, transactions) => {
 		if (err) return callback(err);
-		callback(null, _(transactions).pluck('points').reduce(_.add));
+		callback(null, _(transactions).pluck('points').reduce(sum, pts => {
+			return Math.max(0, sum + pts);
+		}));
 	});
 };
 
