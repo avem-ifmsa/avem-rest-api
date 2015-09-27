@@ -15,15 +15,15 @@ const clientSchema = new mongoose.Schema({
 		unique: true,
 		required: true,
 	},
-	secret: {
-		type: String,
-		required: true,
-		default: randomSecret,
-	},
 	trusted: {
 		type: Boolean,
 		default: false,
 		required: true,
+	},
+	secret: {
+		type: String,
+		required: true,
+		default: randomSecret,
 	},
 	redirectUri: {
 		type: String,
@@ -35,7 +35,7 @@ clientSchema.pre('remove', function(next) {
 		if (err) return next(err);
 		async.each(results, (session, next) => {
 			session.remove(next);
-		});
+		}, next);
 	});
 });
 
