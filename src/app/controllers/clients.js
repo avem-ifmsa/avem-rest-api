@@ -20,8 +20,11 @@ const clientResource = new Resource(Client, {
 	},
 	'attributes': {
 		'name': new Property('name'),
-		'secret': new Property('secret'),
 		'trusted': new Property('trusted'),
+		'secret': {
+			value: new Property('secret'),
+			writable: false,
+		},
 		'redirect-uri': {
 			value: new Property('redirectUri'),
 			nullable: true,
