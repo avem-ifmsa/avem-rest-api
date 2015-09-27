@@ -24,7 +24,7 @@ function authenticatedResponse(req, res, next) {
 	}, (err, results) => {
 		if (err) return next(err);
 		response.meta['authenticated'] = true;
-		response.links['this-user'] = '/users' + results.user._id;
+		response.links['this-user'] = '/users/' + results.user._id;
 		response.links['this-session'] = '/sessions/' + results.session._id;
 		response.send();
 	});
