@@ -30,18 +30,15 @@ const userSchema = new Schema({
 
 userSchema.virtual('password').set(function(password) {
 	let pwLength = password.length;
-	if (pwLength < config.security.password.minLength) {
-		self.invalidate('password', 'password too short', pwLength);
-		throw new Error('password too short');
-	}
+	if (pwLength < config.security.password.minLength)
+		return this.invalidate('password', 'password too short', pwLength);
 	this._password = password;
 });
 
 userSchema.path('passwordHash').validate(function(value) {
 	if (_.isUndefined(this._password) &&
 	    _.isUndefined(this.passwordHash)) {
-	    	self.invalidate('password', 'password field required');
-	    	throw new Error('password field required');
+	    	this.invalidate('password', 'password field required');
 	}
 });
 

@@ -1,10 +1,11 @@
 import {Router} from 'express';
-import jsonapify, {Resource, Runtime, Property, Template, Ref} from 'jsonapify';
+import jsonapify, {Property, Ref, Resource, Runtime, Template} from 'jsonapify';
 
 import './roles';
+
+import {User} from '../models';
 import * as common from './common';
 import * as logger from '../logger';
-import {User} from '../models';
 
 const userResource = new Resource(User, {
 	'type': 'users',
