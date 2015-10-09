@@ -25,6 +25,7 @@ const memberSchema = new Schema({
 	},
 	gender: {
 		type: String,
+		lowercase: true,
 	},
 	birthday: {
 		type: Date,
@@ -33,17 +34,6 @@ const memberSchema = new Schema({
 		type: Date,
 		required: true,
 	},
-	performedActivities: [{
-		type: Schema.ObjectId,
-		ref: 'Activity',
-	}],
-	subscribedActivities: [{
-		type: Schema.ObjectId,
-		ref: 'Activity',
-	}],
-	subscribedCategories: [{
-		type: String,
-	}],
 });
 
 memberSchema.virtual('name.full').get(function() {

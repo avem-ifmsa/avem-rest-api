@@ -45,12 +45,9 @@ const memberResource = new Resource(Member, {
 			value: new Property('active'),
 			writable: false,
 		},
-		'subscribed-categories': new Property('subscribedCategories'),
 	},
 	'relationships': {
 		'user': new Ref('User', 'user'),
-		'performed-activities': new Refs('Activity', 'performedActivities'),
-		'subscribed-activities': new Refs('Activity', 'subscribedActivities'),
 	},
 });
 
