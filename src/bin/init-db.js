@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import async from 'async';
 import ask from 'ask-sync';
 import mongoose from 'mongoose';
@@ -76,21 +77,29 @@ function createAdminRole(client, done) {
 	let role = new Role;
 	role.name = 'admin';
 	role.description = 'Privileged role for administrative tasks';
-	role.privileges = [
-		'user:enum', 'user:add', 'user:read', 'user:edit', 'user:edit-role',
-		'user:remove',
-		'role:enum', 'role:add', 'role:read', 'role:edit', 'role:remove',
-		'client:enum', 'client:add', 'client:read', 'client:edit',
-		'client:trust', 'client:remove',
-		'access-token:enum', 'access-token:read', 'access-token:remove',
-		'refresh-token:enum', 'refresh-token:read', 'refresh-token:remove',
-		'session:enum', 'session:read', 'session:edit', 'session:remove',
-	];
+	role.privileges = expandPrivileges({
+		session: ['enum', 'read', 'edit', 'remove' ],
+		'access-token': [ 'enum', 'read', 'remove' ],
+		'refresh-token': [ 'enum', 'read', 'remove' ],
+		client: [ 'enum', 'add', 'read', 'edit', 'remove' ],
+		role: [ 'enum', 'add', 'read', 'edit', 'remove' ],
+		user: [ 'enum', 'add', 'read', 'edit', 'edit-role', 'remove' ],
+		member: [ 'enum', 'add', 'read', 'edit', 'remove' ],
+		'mb-member': [ 'enum', 'add', 'read', 'edit', 'remove' ],
+		activity: [ 'enum', 'add', 'read', 'edit', 'remove' ],
+	});
 	role.save(err => {
 		if (err) return done(err);
 		console.log('Created admin role');
 		done(null, role);
 	});
+}
+
+function expandPrivileges(privs) {
+	return _.reduce(privs, (results, actions, actor) => {
+		_.each(actions, action => results.push(actor + ':' + action));
+		return results;
+	}, []);
 }
 
 function createUserRole(client, done) {

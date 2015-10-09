@@ -71,7 +71,7 @@ function userIsSelf(req) {
 }
 
 function ifNotSelf(priv) {
-	return (req) => {
+	return req => {
 		return !userIsSelf(req) ? priv : false;
 	};
 }
