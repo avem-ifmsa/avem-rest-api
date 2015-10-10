@@ -19,5 +19,5 @@ const authority = authRbac({
 });
 
 export default authority;
-export const identify = _.constant(authRbac.identify(authority));
 export const requirePrivilege = authRbac.requirePrivilege;
+export const identify = _.constant(authRbac.identify(authority));
