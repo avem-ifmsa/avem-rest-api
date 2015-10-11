@@ -62,8 +62,8 @@ router.get('/',
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.post('/',
-	common.authenticate('token-bearer'),
-	common.requirePrivilege('member:create'),
+	common.authenticate(['token-bearer', 'anonymous']),
+	common.requirePrivilege(memberRenewDate),
 	jsonapify.create('Member'),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -76,6 +76,7 @@ router.get('/:id',
 router.put('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege(ifNotSelf('member:edit')),
+	common.requirePrivilege(memberRenewPrivilege),
 	jsonapify.update(['Member', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -84,6 +85,8 @@ router.delete('/:id',
 	common.requirePrivilege(ifNotSelf('member:remove')),
 	jsonapify.remove(['Member', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
+
+export default router;
 
 function ifNotSelf(priv) {
 	return (req, done) => {
@@ -96,4 +99,29 @@ function ifNotSelf(priv) {
 	};
 }
 
-export default router;
+function memberRenewDateSet(req) {
+	return !!_.get(req.body, 'data.attributes.renew-date');
+}
+
+function memberRenewDateChanged(req, member) {
+	let memberRenewDate = member.renewDate;
+	if (req.method === 'put') {
+		memberRenewDate = _.get(req.body, 'data.attributes.renew-date');
+	return member.renewDate !== memberRenewDate;
+}
+
+function memberRenewPrivilege(req, done) {
+	let memberId = req.params.id;
+	if (req.method === 'post') {
+		if (memberRenewDateSet(req))
+			return done(null, 'member:renew');
+		return done(null, false);
+	} else {
+		Member.findById(memberId, (err, member) => {
+			if (err || !member) return done(err, false);
+			if (memberRenewDateChanged(req, member))
+				return done(null, 'member:renew');
+			return done(null, false);
+		});
+	}
+}

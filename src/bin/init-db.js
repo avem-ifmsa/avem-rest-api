@@ -83,8 +83,8 @@ function createAdminRole(client, done) {
 		'refresh-token': [ 'enum', 'read', 'remove' ],
 		client: [ 'enum', 'add', 'read', 'edit', 'remove' ],
 		role: [ 'enum', 'add', 'read', 'edit', 'remove' ],
-		user: [ 'enum', 'add', 'read', 'edit', 'edit-role', 'remove' ],
-		member: [ 'enum', 'add', 'read', 'edit', 'remove' ],
+		user: [ 'enum', 'add', 'read', 'edit', 'remove' ],
+		member: [ 'enum', 'add', 'read', 'edit', 'renew', 'remove' ],
 		'mb-member': [ 'enum', 'add', 'read', 'edit', 'remove' ],
 		activity: [ 'enum', 'add', 'read', 'edit', 'remove' ],
 	});

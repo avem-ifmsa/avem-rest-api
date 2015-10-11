@@ -45,7 +45,7 @@ router.get('/',
 
 router.post('/',
 	common.authenticate('token-bearer'),
-	common.requirePrivilege('mb-member:create'),
+	common.requirePrivilege('mb-member:add'),
 	jsonapify.create('MbMember'),
 	logger.logErrors(), jsonapify.errorHandler());
 

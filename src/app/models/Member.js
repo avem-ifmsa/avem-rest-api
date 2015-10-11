@@ -32,7 +32,6 @@ const memberSchema = new Schema({
 	},
 	renewDate: {
 		type: Date,
-		required: true,
 	},
 });
 
