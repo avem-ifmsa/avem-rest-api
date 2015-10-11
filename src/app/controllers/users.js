@@ -64,31 +64,31 @@ router.delete('/:id',
 	jsonapify.remove(['User', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
-function userIsSelf(req) {
+export default router;
+
+function userIsSelf(req, user) {
 	let id = req.params.id;
-	let user = req.auth.user.info;
 	return user._id.equals(id);
 }
 
 function ifNotSelf(priv) {
 	return req => {
-		return !userIsSelf(req) ? priv : false;
+		let user = req.auth.user.info;
+		if (!user || userIsSelf(req, user)) return false;
+		return priv;
 	};
 }
 
-function userEditRolePrivilege(req) {
-	let user = req.auth.user.info;
-	if (!user) return false;
-	let newRole = user.role;
+function userRoleChanged(req, user) {
+	let userRole = user.role;
 	if (req.method === 'put')
-		newRole = _.get(req.body, 'data.relationships.role.id');
-	var sameRole = user.role.equals(newRole);
-	return sameRole ? false : 'user:edit-role';
+		userRole = _.get(req.body, 'data.relationships.role.id');
+	return !user.role.equals(userRole);
 }
 
 function userEditPrivilege(req) {
-	if (!userIsSelf(req)) return 'user:edit';
-	return userEditRolePrivilege(req);
+	let user = req.auth.user.info;
+	if (!user) return false;
+	if (userIsSelf(req) && !userRoleChanged(req)) return false;
+	return 'user:edit';
 }
-
-export default router;
