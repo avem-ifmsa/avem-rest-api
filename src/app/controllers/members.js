@@ -63,7 +63,7 @@ router.get('/',
 
 router.post('/',
 	common.authenticate(['token-bearer', 'anonymous']),
-	common.requirePrivilege(memberRenewDate),
+	common.requirePrivilege(memberRenewPrivilege),
 	jsonapify.create('Member'),
 	logger.logErrors(), jsonapify.errorHandler());
 
@@ -105,7 +105,7 @@ function memberRenewDateSet(req) {
 
 function memberRenewDateChanged(req, member) {
 	let memberRenewDate = member.renewDate;
-	if (req.method === 'put') {
+	if (req.method === 'put')
 		memberRenewDate = _.get(req.body, 'data.attributes.renew-date');
 	return member.renewDate !== memberRenewDate;
 }
