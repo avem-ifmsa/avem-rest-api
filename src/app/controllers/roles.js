@@ -57,7 +57,7 @@ router.put('/:id',
 router.delete('/:id',
 	common.authenticate('token-bearer'),
 	common.requirePrivilege('role:remove'),
-	jsonapify.remove([roleResource, jsonapify.param('id')]),
+	jsonapify.remove(['Role', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
 
 export default router;
