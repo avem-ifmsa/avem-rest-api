@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {Router} from 'express';
 import jsonapify, {Property, Ref, Resource, Runtime, Template} from 'jsonapify';
 
@@ -66,9 +67,11 @@ router.delete('/:id',
 
 export default router;
 
-function userIsSelf(req, user) {
-	let id = req.params.id;
-	return user._id.equals(id);
+function userEditPrivilege(req) {
+	let user = req.auth.user.info;
+	if (!user) return false;
+	if (userIsSelf(req) && !userRoleChanged(req)) return false;
+	return 'user:edit';
 }
 
 function ifNotSelf(priv) {
@@ -86,9 +89,7 @@ function userRoleChanged(req, user) {
 	return !user.role.equals(userRole);
 }
 
-function userEditPrivilege(req) {
-	let user = req.auth.user.info;
-	if (!user) return false;
-	if (userIsSelf(req) && !userRoleChanged(req)) return false;
-	return 'user:edit';
+function userIsSelf(req, user) {
+	let userId = req.params.id;
+	return user._id.equals(userId);
 }
