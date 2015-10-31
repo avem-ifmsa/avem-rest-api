@@ -11,7 +11,6 @@ const memberSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User',
 		index: true,
-		required: true,
 	},
 	name: {
 		first: {

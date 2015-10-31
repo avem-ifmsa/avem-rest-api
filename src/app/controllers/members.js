@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {Router} from 'express';
 import jsonapify, {Resource, Runtime, Property, Template, Ref, Refs} from 'jsonapify';
 
@@ -40,14 +41,20 @@ const memberResource = new Resource(Member, {
 			writable: false,
 			nullable: true,
 		},
-		'renew-date': new Property('renewDate'),
+		'renew-date': {
+			value: new Property('renewDate'),
+			nullable: true,
+		},
 		'active': {
 			value: new Property('active'),
 			writable: false,
 		},
 	},
 	'relationships': {
-		'user': new Ref('User', 'user'),
+		'user': {
+			value: new Ref('User', 'user'),
+			nullable: true,
+		},
 	},
 });
 
@@ -62,7 +69,8 @@ router.get('/',
 	logger.logErrors(), jsonapify.errorHandler());
 
 router.post('/',
-	common.authenticate(['token-bearer', 'anonymous']),
+	common.authenticate('token-bearer'),
+	common.requirePrivilege('member:add'),
 	common.requirePrivilege(memberRenewPrivilege),
 	jsonapify.create('Member'),
 	logger.logErrors(), jsonapify.errorHandler());
@@ -75,7 +83,7 @@ router.get('/:id',
 
 router.put('/:id',
 	common.authenticate('token-bearer'),
-	common.requirePrivilege(ifNotSelf('member:edit')),
+	common.requirePrivilege(memberEditPrivilege),
 	common.requirePrivilege(memberRenewPrivilege),
 	jsonapify.update(['Member', jsonapify.param('id')]),
 	logger.logErrors(), jsonapify.errorHandler());
@@ -99,8 +107,42 @@ function ifNotSelf(priv) {
 	};
 }
 
-function memberRenewDateSet(req) {
-	return !!_.get(req.body, 'data.attributes.renew-date');
+function memberEditPrivilege(req, done) {
+	let memberId = req.params.id;
+	Member.findById(memberId, (err, member) => {
+		if (err || !member) return done(err, false);
+		if (memberIsSelf(req, member) && !memberUserChanged(req, member))
+			return done(null, false);
+		return done(null, 'member:edit');
+	});
+}
+
+function memberIsSelf(req, member) {
+	let userId = req.auth.user.info;
+	return member._id.equals(userId);
+}
+
+function memberUserChanged(req, member) {
+	let memberUser = member.user;
+	if (req.method === 'put')
+		memberUser = _.get(req.body, 'data.relationships.user.id');
+	return !member.user.equals(memberUser);
+}
+
+function memberRenewPrivilege(req, done) {
+	if (req.method === 'post') {
+		if (memberRenewDateSet(req))
+			return done(null, 'member:renew');
+		return done(null, false);
+	} else {
+		let memberId = req.params.id;
+		Member.findById(memberId, (err, member) => {
+			if (err || !member) return done(err, false);
+			if (memberRenewDateChanged(req, member))
+				return done(null, 'member:renew');
+			return done(null, false);
+		});
+	}
 }
 
 function memberRenewDateChanged(req, member) {
@@ -110,18 +152,6 @@ function memberRenewDateChanged(req, member) {
 	return member.renewDate !== memberRenewDate;
 }
 
-function memberRenewPrivilege(req, done) {
-	let memberId = req.params.id;
-	if (req.method === 'post') {
-		if (memberRenewDateSet(req))
-			return done(null, 'member:renew');
-		return done(null, false);
-	} else {
-		Member.findById(memberId, (err, member) => {
-			if (err || !member) return done(err, false);
-			if (memberRenewDateChanged(req, member))
-				return done(null, 'member:renew');
-			return done(null, false);
-		});
-	}
+function memberRenewDateSet(req) {
+	return !!_.get(req.body, 'data.attributes.renew-date');
 }
